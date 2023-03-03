@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { Component } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import PokemonForm from "./Components/PokemonForm";
+// import PokemonInfo from "./PokemonInfo/PokemonInfo";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends Component {
+  state = { pokemonName: "" };
+
+  handleFormSubmit = (pokemonName) => {
+    this.setState({ pokemonName });
+    console.log(pokemonName);
+  };
+
+  render() {
+    // const { pokemon, loading } = this.state;
+    return (
+      <>
+        {/* {loading && <h1>Loading...</h1>}
+        {pokemon && <div>{pokemon.name}</div>} */}
+        <PokemonForm onSubmit={this.handleFormSubmit} />
+        <ToastContainer autoClose={3000} />
+      </>
+    );
+  }
 }
-
-export default App;
