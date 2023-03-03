@@ -14,11 +14,14 @@ export default class PokemonForm extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     if (this.state.pokemonName.trim() === "") {
-      return toast.error("Type pokemon name");
+      return toast.error("Type pokemon name", {
+        position: "top-right",
+        autoClose: 1000,
+      });
     }
 
-    this.setState({ pokemonName: "" });
     this.props.onSubmit(this.state.pokemonName);
+    this.setState({ pokemonName: "" });
   };
 
   render() {
