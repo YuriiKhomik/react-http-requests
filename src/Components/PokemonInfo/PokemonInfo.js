@@ -1,10 +1,14 @@
+import PokemonDataView from "Components/PokemonDataView";
 import { Component } from "react";
+import PokemonErrorView from "Components/PokemonErrorView";
+import PokemonPendingView from "Components/PokemonPendingView";
 
 export default class PokemonInfo extends Component {
   state = {
     pokemon: null,
-    loading: false,
+    // loading: false,
     error: null,
+    status: "idle",
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -14,42 +18,62 @@ export default class PokemonInfo extends Component {
       // console.log("prevProps.pokemonName: ", prevProps.pokemonName);
       // console.log("this.props.pokemonName : ", this.props.pokemonName);
       // console.log("we'll do fetch");
-      this.setState({ loading: true, pokemon: null });
+      this.setState({ status: "pending" });
       setTimeout(() => {
-        fetch(`https://pokeapi.co/api/v2/pokemon/${nextName}`)
-          .then((res) => {
-            if (res.ok) {
-              return res.json();
-            }
-            return Promise.reject(
-              new Error(`There is no pokemon with name ${nextName}`)
-            );
-          })
-          .then((pokemon) => this.setState({ pokemon }))
-          .catch((error) => this.setState({ error }))
-          .finally(this.setState({ loading: false }));
+        setTimeout(() => {
+          fetch(`https://pokeapi.co/api/v2/pokemon/${nextName}`)
+            .then((res) => {
+              if (res.ok) {
+                return res.json();
+              }
+              return Promise.reject(
+                new Error(`There is no pokemon with name ${nextName}`)
+              );
+            })
+            .then((pokemon) => this.setState({ pokemon, status: "resolved" }))
+            .catch((error) => this.setState({ error, status: "rejected" }));
+        }, 1000);
       }, 1000);
     }
   }
   render() {
-    const { pokemon, loading, error } = this.state;
+    const { pokemon, error, status } = this.state;
     const { pokemonName } = this.props;
-    return (
-      <div>
-        {error && <h1>{error.message}</h1>}
-        {loading && <div>loading.......</div>}
-        {!pokemonName && <div>please enter pokemon's name</div>}
-        {pokemon && (
-          <div>
-            <p>{pokemon.name}</p>
-            <img
-              src={pokemon.sprites.other["official-artwork"].front_default}
-              width="240"
-              alt={pokemon.name}
-            />
-          </div>
-        )}
-      </div>
-    );
+
+    // VIA STATE MACHINE
+
+    if (status === "idle") {
+      return <div>please enter pokemon's name</div>;
+    }
+
+    if (status === "pending") {
+      return <PokemonPendingView pokemonName={pokemonName} />;
+    }
+
+    if (status === "rejected") {
+      return <PokemonErrorView message={error.message} />;
+    }
+
+    if (status === "resolved") {
+      return <PokemonDataView pokemon={pokemon} />;
+    }
+
+    // return (
+    //   <div>
+    //     {error && <h1>{error.message}</h1>}
+    //     {loading && <div>loading.......</div>}
+    //     {!pokemonName && <div>please enter pokemon's name</div>}
+    //     {pokemon && (
+    //       <div>
+    //         <p>{pokemon.name}</p>
+    //         <img
+    //           src={pokemon.sprites.other["official-artwork"].front_default}
+    //           width="240"
+    //           alt={pokemon.name}
+    //         />
+    //       </div>
+    //     )}
+    //   </div>
+    // );
   }
 }
