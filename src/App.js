@@ -5,7 +5,9 @@ import PokemonForm from "./Components/PokemonForm";
 import PokemonInfo from "./Components/PokemonInfo";
 
 export default class App extends Component {
-  state = { pokemonName: "" };
+  state = {
+    pokemonName: "",
+  };
 
   handleFormSubmit = (pokemonName) => {
     this.setState({ pokemonName });
@@ -16,8 +18,6 @@ export default class App extends Component {
     const { pokemonName } = this.state;
     return (
       <>
-        {/* {loading && <h1>Loading...</h1>}
-        {pokemon && <div>{pokemon.name}</div>} */}
         <PokemonForm onSubmit={this.handleFormSubmit} />
         <PokemonInfo pokemonName={pokemonName} />
         <ToastContainer

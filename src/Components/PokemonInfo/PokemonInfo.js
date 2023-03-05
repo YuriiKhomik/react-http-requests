@@ -20,10 +20,12 @@ export default class PokemonInfo extends Component {
       // console.log("this.props.pokemonName : ", this.props.pokemonName);
       // console.log("we'll do fetch");
       this.setState({ status: "pending" });
-      pokemonApi
-        .fetchPokemon(nextName)
-        .then((pokemon) => this.setState({ pokemon, status: "resolved" }))
-        .catch((error) => this.setState({ error, status: "rejected" }));
+      setTimeout(() => {
+        pokemonApi
+          .fetchPokemon(nextName)
+          .then((pokemon) => this.setState({ pokemon, status: "resolved" }))
+          .catch((error) => this.setState({ error, status: "rejected" }));
+      }, 3000);
     }
   }
   render() {
